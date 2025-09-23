@@ -1,3 +1,4 @@
+// api/members
 import connectDB from "@/lib/mongodb";
 import Member from "@/models/Member";
 import bcrypt from "bcryptjs";

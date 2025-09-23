@@ -1,4 +1,4 @@
-// pages/api/announcements.js or /api/announcements/[id].js
+// pages/api/announcements.js
 import connectDB from "@/lib/mongodb";
 import Announcement from "@/models/Announcement";
 
@@ -7,9 +7,8 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     try {
-      const announcements = await Announcement.find()
-        .sort({ createdAt: -1 })
-        .limit(10);
+      // Fetch all announcements, no limit
+      const announcements = await Announcement.find().sort({ createdAt: -1 });
 
       const formatted = announcements.map((a) => ({
         ...a._doc,
@@ -29,7 +28,7 @@ export default async function handler(req, res) {
 
   if (req.method === "DELETE") {
     try {
-      const { id } = req.body; // get announcement id from request body
+      const { id } = req.body;
       if (!id)
         return res.status(400).json({ success: false, error: "ID required" });
 

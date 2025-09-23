@@ -47,7 +47,12 @@ export default function Layout({ children }) {
       icon: <FiFileText />,
       href: "/complaints",
     },
-    { id: "notices", label: "Notices", icon: <FiBell />, href: "/notices" },
+    {
+      id: "notices",
+      label: "Notices",
+      icon: <FiBell />,
+      href: "/annuncemet",
+    },
     {
       id: "settings",
       label: "Settings",

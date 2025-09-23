@@ -1,36 +1,50 @@
+// pages/index.js
 import React from "react";
 import nookies from "nookies";
 
-const IndexPage = () => {
-  // Sample data
+const IndexPage = ({
+  membersThisMonth,
+  membersLastMonth,
+  announcementsThisMonth,
+  announcementsLastMonth,
+}) => {
+  // ✅ Safe percentage change calculation
+  const calculateChange = (thisMonth, lastMonth) => {
+    if (lastMonth === 0) {
+      if (thisMonth === 0) return "+0%";
+      return "+100%"; // new entries this month, last month was zero
+    }
+    return `+${Math.round(((thisMonth - lastMonth) / lastMonth) * 100)}%`;
+  };
+
   const statsData = [
     {
-      title: "Total Residents",
-      value: "248",
-      change: "+12%",
+      title: "Residents This Month",
+      value: membersThisMonth,
+      change: calculateChange(membersThisMonth, membersLastMonth),
       icon: "👥",
       color: "bg-blue-500",
     },
     {
-      title: "Maintenance Due",
-      value: "₹42,580",
-      change: "-3%",
-      icon: "💰",
-      color: "bg-green-500",
+      title: "Residents Last Month",
+      value: membersLastMonth,
+      change: calculateChange(membersLastMonth, 0),
+      icon: "👤",
+      color: "bg-blue-300",
     },
     {
-      title: "Complaints",
-      value: "18",
-      change: "+5%",
+      title: "Announcements This Month",
+      value: announcementsThisMonth,
+      change: calculateChange(announcementsThisMonth, announcementsLastMonth),
       icon: "📝",
       color: "bg-red-500",
     },
     {
-      title: "Events",
-      value: "4",
-      change: "+2",
-      icon: "📅",
-      color: "bg-purple-500",
+      title: "Announcements Last Month",
+      value: announcementsLastMonth,
+      change: calculateChange(announcementsLastMonth, 0),
+      icon: "📄",
+      color: "bg-red-300",
     },
   ];
 
@@ -59,7 +73,7 @@ const IndexPage = () => {
   ];
 
   return (
-    <div>
+    <div className="p-6">
       <div className="space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -81,7 +95,7 @@ const IndexPage = () => {
                         : "text-red-500"
                     }`}
                   >
-                    {stat.change} from last month
+                    {stat.change} from comparison
                   </p>
                 </div>
                 <div
@@ -143,20 +157,87 @@ const IndexPage = () => {
   );
 };
 
-// ✅ Protect with cookie check
+// ✅ Server-side fetch with separate this month & last month counts
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
 
   if (cookies.loggedIn !== "true") {
+    return { redirect: { destination: "/login", permanent: false } };
+  }
+
+  try {
+    const [membersRes, announcementsRes] = await Promise.all([
+      fetch(`https://society-admin-eosin.vercel.app/api/members`),
+      fetch(`https://society-admin-eosin.vercel.app/api/announcements/get`),
+    ]);
+
+    const membersData = await membersRes.json();
+    const announcementsData = await announcementsRes.json();
+
+    const membersArray = Array.isArray(membersData) ? membersData : [];
+    const announcementsArray = announcementsData.announcements || [];
+
+    const now = new Date();
+
+    // Last month range
+    const startLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endLastMonth = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      0,
+      23,
+      59,
+      59,
+      999
+    );
+
+    // This month range
+    const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endThisMonth = now;
+
+    const membersLastMonth = membersArray.filter(
+      (m) =>
+        new Date(m.createdAt) >= startLastMonth &&
+        new Date(m.createdAt) <= endLastMonth
+    ).length;
+
+    const membersThisMonth = membersArray.filter(
+      (m) =>
+        new Date(m.createdAt) >= startThisMonth &&
+        new Date(m.createdAt) <= endThisMonth
+    ).length;
+
+    const announcementsLastMonth = announcementsArray.filter(
+      (a) =>
+        new Date(a.createdAt) >= startLastMonth &&
+        new Date(a.createdAt) <= endLastMonth
+    ).length;
+
+    const announcementsThisMonth = announcementsArray.filter(
+      (a) =>
+        new Date(a.createdAt) >= startThisMonth &&
+        new Date(a.createdAt) <= endThisMonth
+    ).length;
+
     return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
+      props: {
+        membersThisMonth,
+        membersLastMonth,
+        announcementsThisMonth,
+        announcementsLastMonth,
+      },
+    };
+  } catch (err) {
+    console.error("Dashboard fetch error:", err);
+    return {
+      props: {
+        membersThisMonth: 0,
+        membersLastMonth: 0,
+        announcementsThisMonth: 0,
+        announcementsLastMonth: 0,
       },
     };
   }
-
-  return { props: {} };
 }
 
 export default IndexPage;
