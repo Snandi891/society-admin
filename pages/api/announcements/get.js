@@ -1,4 +1,3 @@
-// pages/api/announcements.js
 import connectDB from "@/lib/mongodb";
 import Announcement from "@/models/Announcement";
 
@@ -7,7 +6,6 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     try {
-      // Fetch all announcements, no limit
       const announcements = await Announcement.find().sort({ createdAt: -1 });
 
       const formatted = announcements.map((a) => ({

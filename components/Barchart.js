@@ -17,7 +17,7 @@ const MemberBarChart = () => {
   const [animateRefresh, setAnimateRefresh] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [aggregation, setAggregation] = useState("month"); // day, month, year
+  const [aggregation, setAggregation] = useState("month");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -35,7 +35,6 @@ const MemberBarChart = () => {
           if (!member.createdAt) return;
           const date = new Date(member.createdAt);
 
-          // Skip out-of-range dates
           if (startDate && new Date(startDate) > date) return;
           if (endDate && new Date(endDate) < date) return;
 
@@ -63,7 +62,6 @@ const MemberBarChart = () => {
         const end = endDate ? new Date(endDate) : new Date();
 
         if (!current) {
-          // Default ranges
           const now = new Date();
           if (aggregation === "month") {
             for (let i = 11; i >= 0; i--) {
@@ -109,7 +107,6 @@ const MemberBarChart = () => {
             }
           }
         } else {
-          // Custom date range
           while (current <= end) {
             let key, label;
             if (aggregation === "day") {
@@ -138,7 +135,6 @@ const MemberBarChart = () => {
                   : key === `${new Date().getFullYear()}`,
             });
 
-            // Increment
             if (aggregation === "day") current.setDate(current.getDate() + 1);
             if (aggregation === "month")
               current.setMonth(current.getMonth() + 1);
@@ -165,7 +161,6 @@ const MemberBarChart = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6 relative">
-      {/* Header: Date Range + Aggregation + Reset */}
       <div className="flex flex-wrap gap-2 items-center mb-4">
         <label>From:</label>
         <input

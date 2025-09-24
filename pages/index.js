@@ -1,4 +1,3 @@
-// pages/index.js
 import React from "react";
 import nookies from "nookies";
 import MemberBarChart from "@/components/Barchart";
@@ -11,11 +10,10 @@ const IndexPage = ({
   announcementsThisMonth,
   announcementsLastMonth,
 }) => {
-  // ✅ Safe percentage change calculation
   const calculateChange = (thisMonth, lastMonth) => {
     if (lastMonth === 0) {
       if (thisMonth === 0) return "+0%";
-      return "+100%"; // new entries this month, last month was zero
+      return "+100%";
     }
     return `+${Math.round(((thisMonth - lastMonth) / lastMonth) * 100)}%`;
   };
@@ -78,7 +76,6 @@ const IndexPage = ({
   return (
     <div className="p-6">
       <div className="space-y-6">
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statsData.map((stat, index) => (
             <div
@@ -111,14 +108,11 @@ const IndexPage = ({
           ))}
         </div>
 
-        {/* Charts & Activities */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Payment History */}
           <div>
             <MemberCircleChart />
           </div>
 
-          {/* Recent Activities */}
           <div>
             <RecentActivities />
           </div>
@@ -129,7 +123,6 @@ const IndexPage = ({
   );
 };
 
-// ✅ Server-side fetch with separate this month & last month counts
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
 
@@ -151,7 +144,6 @@ export async function getServerSideProps(ctx) {
 
     const now = new Date();
 
-    // Last month range
     const startLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endLastMonth = new Date(
       now.getFullYear(),
@@ -163,7 +155,6 @@ export async function getServerSideProps(ctx) {
       999
     );
 
-    // This month range
     const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endThisMonth = now;
 

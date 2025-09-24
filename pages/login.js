@@ -23,7 +23,7 @@ export default function Login() {
       });
 
       if (res.ok) {
-        router.push(from);
+        router.replace(from);
       } else {
         const data = await res.json();
         setError(data.message || "Login failed");
@@ -39,7 +39,6 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="p-8">
-          {/* Header Section */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center">
@@ -67,7 +66,6 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
               <div className="flex items-center">
@@ -88,7 +86,6 @@ export default function Login() {
             </div>
           )}
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label

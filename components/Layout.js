@@ -88,24 +88,21 @@ export default function Layout({ children }) {
     },
   ];
 
-  // ✅ Logout function
   const handleLogout = async () => {
     try {
       await fetch("/api/logout", { method: "POST" });
-      router.push("/login"); // redirect to login page
+      router.push("/login");
     } catch (err) {
       console.error("Logout failed", err);
     }
   };
 
-  // ✅ If current route is /login, render only the page content (no sidebar/header)
   if (router.pathname === "/login") {
     return <>{children}</>;
   }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans">
-      {/* Sidebar */}
       <div
         className={`bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 text-white w-64 min-h-screen fixed top-0 left-0 transition-all duration-300 shadow-2xl z-40 
           ${sidebarOpen ? "translate-x-0" : "-translate-x-64"} 
@@ -161,7 +158,6 @@ export default function Layout({ children }) {
         </div>
       </div>
 
-      {/* Overlay */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
@@ -169,9 +165,7 @@ export default function Layout({ children }) {
         />
       )}
 
-      {/* Main wrapper */}
       <div className="flex-1 lg:ml-64 transition-all duration-300">
-        {/* Header */}
         <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
           <div className="flex items-center justify-between px-6 py-3">
             <div className="flex items-center">
@@ -191,7 +185,6 @@ export default function Layout({ children }) {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Notifications */}
               <div className="relative">
                 <button
                   className="relative p-2.5 rounded-xl text-gray-500 hover:bg-gray-100 transition-all duration-300 hover:text-blue-600"
@@ -234,7 +227,6 @@ export default function Layout({ children }) {
                 )}
               </div>
 
-              {/* Profile */}
               <div className="relative">
                 <div
                   className="flex items-center bg-white pl-1 pr-3 py-1 rounded-xl cursor-pointer hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-blue-300"
@@ -285,7 +277,6 @@ export default function Layout({ children }) {
           </div>
         </header>
 
-        {/* Page content */}
         <main className="p-2 min-h-screen">
           <div className="bg-white rounded-2xl shadow-sm p-2 border border-gray-200 transition-all duration-300 hover:shadow-md">
             {children}
@@ -299,7 +290,6 @@ export default function Layout({ children }) {
         </main>
       </div>
 
-      {/* Close dropdown when clicking outside */}
       {(profileDropdownOpen || notificationsOpen) && (
         <div
           className="fixed inset-0 z-10"

@@ -7,7 +7,6 @@ const RecentActivities = () => {
   const [spin, setSpin] = useState(false);
   const [glow, setGlow] = useState(false);
 
-  // Helper to convert UTC to India time
   const formatIndiaTime = (utcTime) => {
     return new Date(utcTime).toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
@@ -23,10 +22,9 @@ const RecentActivities = () => {
   const fetchRecentActivities = async () => {
     try {
       setLoading(true);
-      setSpin(true); // start spin animation
-      setGlow(true); // start glow animation
+      setSpin(true);
+      setGlow(true);
 
-      // Fetch members
       const membersRes = await fetch("/api/members");
       const membersData = await membersRes.json();
       const membersArray = Array.isArray(membersData)
@@ -41,7 +39,6 @@ const RecentActivities = () => {
         id: member._id,
       }));
 
-      // Fetch announcements
       const announcementsRes = await fetch("/api/announcements/get");
       const announcementsData = await announcementsRes.json();
       const announcementsArray = announcementsData.announcements || [];
@@ -56,20 +53,18 @@ const RecentActivities = () => {
         })
       );
 
-      // Combine, sort by time descending, limit to 4
       const combined = [...membersActivities, ...announcementsActivities]
         .sort((a, b) => new Date(b.time) - new Date(a.time))
         .slice(0, 4);
 
-      // Clear old activities to trigger animation
       setRecentActivities([]);
       setTimeout(() => setRecentActivities(combined), 50);
     } catch (error) {
       console.error("Failed to fetch recent activities:", error);
     } finally {
       setLoading(false);
-      setTimeout(() => setSpin(false), 500); // stop spin animation
-      setTimeout(() => setGlow(false), 1000); // stop glow after animation
+      setTimeout(() => setSpin(false), 500);
+      setTimeout(() => setGlow(false), 1000);
     }
   };
 
@@ -103,7 +98,7 @@ const RecentActivities = () => {
               key={activity.id}
               className={`flex items-center border-b pb-4 last:border-0 last:pb-0 transition-all duration-700 p-2 rounded-lg opacity-0 translate-y-4 animate-fade-in ${
                 index === 0
-                  ? "bg-green-100 border-green-300 shadow-md" // Highlight latest activity
+                  ? "bg-green-100 border-green-300 shadow-md"
                   : "hover:bg-gray-50"
               }`}
               style={{ animationDelay: `${index * 100}ms` }}
@@ -136,7 +131,6 @@ const RecentActivities = () => {
         </div>
       )}
 
-      {/* Tailwind animation for fade-in */}
       <style jsx>{`
         .animate-fade-in {
           animation: fadeInSlide 0.5s forwards;

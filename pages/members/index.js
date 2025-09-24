@@ -47,18 +47,14 @@ const MemberManagement = () => {
     );
     const occupiedUnits = new Set(data.map((m) => m.flatNumber)).size;
 
-    // Animate counting up
-    const duration = 1500; // ms
+    const duration = 1500;
     const steps = 30;
     const stepDuration = duration / steps;
 
-    // Animate total members
     animateValue("totalMembers", 0, totalMembers, steps, stepDuration);
 
-    // Animate total residents
     animateValue("totalResidents", 0, totalResidents, steps, stepDuration);
 
-    // Animate occupied units
     animateValue("occupiedUnits", 0, occupiedUnits, steps, stepDuration);
   };
 

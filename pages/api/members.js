@@ -1,4 +1,3 @@
-// api/members
 import connectDB from "@/lib/mongodb";
 import Member from "@/models/Member";
 import bcrypt from "bcryptjs";
@@ -26,7 +25,6 @@ export default async function handler(req, res) {
       const updateData = { name, flatNumber, phone };
 
       if (password) {
-        // ✅ hash new password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
         updateData.password = hashedPassword;
       }

@@ -6,7 +6,7 @@ const MemberSchema = new mongoose.Schema(
     flatNumber: { type: String, required: true },
     phone: { type: String, required: true },
     password: { type: String, required: true },
-    familyCount: { type: Number, required: true }, // ✅ NEW FIELD
+    familyCount: { type: Number, required: true },
     role: { type: String, default: "resident" },
   },
   { timestamps: true }

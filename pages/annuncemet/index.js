@@ -22,7 +22,6 @@ export default function AnnouncementPage() {
   const [highlightedId, setHighlightedId] = useState(null);
   const textareaRef = useRef(null);
 
-  // Fetch all announcements
   const fetchAnnouncements = async () => {
     try {
       setLoading(true);
@@ -34,7 +33,6 @@ export default function AnnouncementPage() {
         );
         setAnnouncements(sorted);
 
-        // Highlight newest announcement
         if (
           sorted.length > 0 &&
           sorted[0]?.createdAt !== announcements[0]?.createdAt
@@ -52,11 +50,9 @@ export default function AnnouncementPage() {
   };
 
   useEffect(() => {
-    // ✅ Fetch announcements only once when page loads
     fetchAnnouncements();
   }, []);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -64,7 +60,6 @@ export default function AnnouncementPage() {
     }
   }, [announcement]);
 
-  // Send announcement
   const handleSendAnnouncement = async () => {
     if (!announcement.trim()) {
       toast.error("Please enter an announcement message");
@@ -96,12 +91,10 @@ export default function AnnouncementPage() {
     }
   };
 
-  // Delete announcement with confirmation
   const handleDelete = async (id) => {
     const announcementToDelete = announcements.find((a) => a._id === id);
     if (!announcementToDelete) return;
 
-    // Show confirmation toast
     toast(
       (t) => (
         <div className="flex flex-col items-start p-2">
@@ -123,10 +116,8 @@ export default function AnnouncementPage() {
               onClick={async () => {
                 toast.dismiss(t.id);
 
-                // Remove locally first for instant UI feedback
                 setAnnouncements((prev) => prev.filter((a) => a._id !== id));
 
-                // Call API to delete in backend
                 try {
                   const res = await fetch("/api/announcements/get", {
                     method: "DELETE",
@@ -136,7 +127,7 @@ export default function AnnouncementPage() {
                   const data = await res.json();
                   if (!data.success) {
                     toast.error(data.error || "Failed to delete announcement");
-                    // Restore locally if delete failed
+
                     setAnnouncements((prev) => [announcementToDelete, ...prev]);
                   } else {
                     toast.success("Announcement deleted successfully");
@@ -159,14 +150,12 @@ export default function AnnouncementPage() {
     );
   };
 
-  // Format date and time with proper formatting
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMs = now - date;
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
 
-    // If less than 24 hours, show relative time
     if (diffInHours < 24) {
       if (diffInHours < 1) {
         const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
@@ -176,7 +165,6 @@ export default function AnnouncementPage() {
       return `${diffInHours} hour${diffInHours !== 1 ? "s" : ""} ago`;
     }
 
-    // Otherwise, show full date and time
     return date.toLocaleString(undefined, {
       year: "numeric",
       month: "short",
@@ -186,7 +174,6 @@ export default function AnnouncementPage() {
     });
   };
 
-  // Format time in 12-hour format with AM/PM
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], {
@@ -213,7 +200,6 @@ export default function AnnouncementPage() {
         }}
       />
 
-      {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -244,14 +230,12 @@ export default function AnnouncementPage() {
       </motion.header>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left: Announcements List */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="w-full lg:w-3/5 bg-white p-4 rounded-2xl shadow-xl border border-blue-100 overflow-hidden flex flex-col"
         >
-          {/* Header */}
           <div className="flex items-center justify-between mb-4 pb-1 border-b border-blue-50">
             <h2 className="text-lg font-semibold flex items-center text-gray-800">
               <Megaphone className="mr-2 text-blue-600" size={18} />
@@ -262,7 +246,6 @@ export default function AnnouncementPage() {
             </span>
           </div>
 
-          {/* No Announcements */}
           {announcements.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <div className="p-3 bg-blue-100 rounded-full mb-3">
@@ -276,7 +259,6 @@ export default function AnnouncementPage() {
               </p>
             </div>
           ) : (
-            // Announcements List
             <div className="overflow-y-auto flex-grow pr-1 scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-50 max-h-96">
               <ul className="space-y-2">
                 <AnimatePresence>
@@ -307,14 +289,12 @@ export default function AnnouncementPage() {
                       : "bg-white border-gray-200 hover:border-blue-200 shadow-sm hover:shadow-md"
                   }`}
                       >
-                        {/* Announcement Message */}
                         <div className="flex-grow mb-2">
                           <p className="text-gray-800 text-sm break-words whitespace-pre-wrap">
                             {a.message}
                           </p>
                         </div>
 
-                        {/* Date & Time */}
                         <div className="flex justify-between items-center text-xs text-gray-500 pt-1 border-t border-gray-100">
                           <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1">
@@ -327,7 +307,6 @@ export default function AnnouncementPage() {
                             </div>
                           </div>
 
-                          {/* Delete Button */}
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => handleDelete(a._id)}
@@ -347,7 +326,6 @@ export default function AnnouncementPage() {
           )}
         </motion.div>
 
-        {/* Right: Create Announcement */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -415,7 +393,6 @@ export default function AnnouncementPage() {
             </button>
           </div>
 
-          {/* Tips */}
           <div className="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
             <h3 className="text-sm font-medium text-blue-800 flex items-center mb-2">
               <CheckCircle2 className="w-4 h-4 mr-1" />
@@ -433,7 +410,6 @@ export default function AnnouncementPage() {
         </motion.div>
       </div>
 
-      {/* Loading Overlay */}
       <AnimatePresence>
         {loading && (
           <motion.div
