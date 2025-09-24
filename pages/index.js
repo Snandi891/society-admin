@@ -1,6 +1,9 @@
 // pages/index.js
 import React from "react";
 import nookies from "nookies";
+import MemberBarChart from "@/components/Barchart";
+import MemberCircleChart from "@/components/MemberCircleChart";
+import RecentActivities from "@/components/RecentActivities";
 
 const IndexPage = ({
   membersThisMonth,
@@ -111,47 +114,16 @@ const IndexPage = ({
         {/* Charts & Activities */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Payment History */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Payment History</h3>
-            <div className="h-64 flex items-end space-x-2">
-              {paymentData.map((item, index) => (
-                <div key={index} className="flex flex-col items-center flex-1">
-                  <div
-                    className="bg-blue-500 rounded-t w-full transition-all duration-500 ease-out"
-                    style={{ height: `${(item.amount / 50000) * 100}%` }}
-                  ></div>
-                  <span className="text-xs mt-2">{item.month}</span>
-                </div>
-              ))}
-            </div>
+          <div>
+            <MemberCircleChart />
           </div>
 
           {/* Recent Activities */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Recent Activities</h3>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center border-b pb-4 last:border-0 last:pb-0 transition-all duration-300 hover:bg-gray-50 p-2 rounded-lg"
-                >
-                  <div className="bg-blue-100 rounded-full h-10 w-10 flex items-center justify-center mr-4">
-                    <span>📋</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {activity.user}{" "}
-                      <span className="font-normal text-gray-700">
-                        {activity.action}
-                      </span>
-                    </p>
-                    <p className="text-gray-500 text-sm">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div>
+            <RecentActivities />
           </div>
         </div>
+        <MemberBarChart />
       </div>
     </div>
   );

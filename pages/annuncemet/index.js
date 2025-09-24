@@ -128,7 +128,7 @@ export default function AnnouncementPage() {
 
                 // Call API to delete in backend
                 try {
-                  const res = await fetch("/api/announcements/delete", {
+                  const res = await fetch("/api/announcements/get", {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id }),
@@ -249,36 +249,38 @@ export default function AnnouncementPage() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="w-full lg:w-3/5 bg-white p-5 md:p-6 rounded-2xl shadow-xl border border-blue-100 overflow-hidden flex flex-col"
+          className="w-full lg:w-3/5 bg-white p-4 rounded-2xl shadow-xl border border-blue-100 overflow-hidden flex flex-col"
         >
-          <div className="flex items-center justify-between mb-6 pb-2 border-b border-blue-50">
-            <h2 className="text-xl font-semibold flex items-center text-gray-800">
-              <Megaphone className="mr-2 text-blue-600" size={20} />
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4 pb-1 border-b border-blue-50">
+            <h2 className="text-lg font-semibold flex items-center text-gray-800">
+              <Megaphone className="mr-2 text-blue-600" size={18} />
               Recent Announcements
             </h2>
-            <span className="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+            <span className="text-xs font-medium px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
               {announcements.length} total
             </span>
           </div>
 
+          {/* No Announcements */}
           {announcements.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="p-4 bg-blue-100 rounded-full mb-4">
-                <Megaphone className="text-blue-600" size={32} />
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <div className="p-3 bg-blue-100 rounded-full mb-3">
+                <Megaphone className="text-blue-600" size={28} />
               </div>
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
+              <h3 className="text-base font-medium text-gray-700 mb-1">
                 No announcements yet
               </h3>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 text-xs">
                 Create your first announcement to get started
               </p>
             </div>
           ) : (
-            <div className="overflow-y-auto flex-grow pr-2 -mr-2">
-              <ul className="space-y-4">
+            // Announcements List
+            <div className="overflow-y-auto flex-grow pr-1 scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-50 max-h-96">
+              <ul className="space-y-2">
                 <AnimatePresence>
                   {announcements.map((a) => {
-                    // ✅ format date & time for each announcement
                     const dateObj = new Date(a.createdAtIST);
                     const date = dateObj.toLocaleDateString("en-IN", {
                       day: "2-digit",
@@ -293,49 +295,46 @@ export default function AnnouncementPage() {
                     return (
                       <motion.li
                         key={a._id}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.2 }}
                         layout
-                        className={`p-4 md:p-5 rounded-xl border transition-all duration-300 flex flex-col group
-                            ${
-                              highlightedId === a._id
-                                ? "bg-gradient-to-r from-blue-50 to-blue-100 border-blue-300 shadow-blue-200 shadow-lg ring-2 ring-blue-200"
-                                : "bg-white border-gray-200 hover:border-blue-200 shadow-md hover:shadow-lg"
-                            }`}
+                        className={`p-3 rounded-lg border transition-all duration-200 flex flex-col group
+                  ${
+                    highlightedId === a._id
+                      ? "bg-gradient-to-r from-blue-50 to-blue-100 border-blue-300 shadow-blue-200 shadow-md ring-1 ring-blue-200"
+                      : "bg-white border-gray-200 hover:border-blue-200 shadow-sm hover:shadow-md"
+                  }`}
                       >
-                        <div className="flex-grow mb-3">
-                          <p className="text-gray-800 text-base md:text-lg mb-3">
+                        {/* Announcement Message */}
+                        <div className="flex-grow mb-2">
+                          <p className="text-gray-800 text-sm break-words whitespace-pre-wrap">
                             {a.message}
                           </p>
                         </div>
 
-                        <div className="flex justify-between items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
-                          <div className="flex items-center gap-4">
-                            {/* Date */}
+                        {/* Date & Time */}
+                        <div className="flex justify-between items-center text-xs text-gray-500 pt-1 border-t border-gray-100">
+                          <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1">
-                              <Calendar className="w-4 h-4 text-gray-500" />
+                              <Calendar className="w-3 h-3 text-gray-500" />
                               <span>{date}</span>
                             </div>
-
-                            {/* Time */}
                             <div className="flex items-center gap-1">
-                              <Clock className="w-4 h-4 text-gray-500" />
+                              <Clock className="w-3 h-3 text-gray-500" />
                               <span>{time}</span>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-400">
-                              {formatDateTime(a.createdAt)}
-                            </span>
+                          {/* Delete Button */}
+                          <div className="flex items-center gap-1">
                             <button
                               onClick={() => handleDelete(a._id)}
-                              className="opacity-70 hover:opacity-100 text-red-500 hover:text-red-700 transition p-1 rounded-lg hover:bg-red-50"
+                              className="opacity-70 hover:opacity-100 text-red-500 hover:text-red-700 transition p-1 rounded"
                               title="Delete announcement"
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={14} />
                             </button>
                           </div>
                         </div>
