@@ -15,6 +15,7 @@ import {
   FiUser,
   FiHelpCircle,
 } from "react-icons/fi";
+import NotificationsDropdown from "./Notifications";
 
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -39,13 +40,13 @@ export default function Layout({ children }) {
       id: "payments",
       label: "Payments",
       icon: <FiCreditCard />,
-      href: "/payments",
+      href: "/payment",
     },
     {
       id: "complaints",
       label: "Complaints",
       icon: <FiFileText />,
-      href: "/complaints",
+      href: "/complaint",
     },
     {
       id: "notices",
@@ -58,6 +59,12 @@ export default function Layout({ children }) {
       label: "Settings",
       icon: <FiSettings />,
       href: "/settings",
+    },
+    {
+      id: "guest-visits",
+      label: "Guest Visits",
+      icon: <FiUser />,
+      href: "/guest-visits",
     },
   ];
 
@@ -185,7 +192,7 @@ export default function Layout({ children }) {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="relative">
+              {/* <div className="relative">
                 <button
                   className="relative p-2.5 rounded-xl text-gray-500 hover:bg-gray-100 transition-all duration-300 hover:text-blue-600"
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
@@ -225,6 +232,9 @@ export default function Layout({ children }) {
                     </div>
                   </div>
                 )}
+              </div> */}
+              <div>
+                <NotificationsDropdown />
               </div>
 
               <div className="relative">
